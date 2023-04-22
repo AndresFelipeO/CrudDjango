@@ -1,6 +1,8 @@
-<h1>Hola mundo</h1>
+{% extends 'base.html' %}
 
-
+{% block content %}
+{{error}}
+<h1>Signup</h1>
 <form action="/signup/" method="POST">
     {% csrf_token %} <!--token para verificar que el formulario fue creado para nuestro propio servidor-->
     {{form.as_p}}
@@ -8,3 +10,5 @@
         Signup
     </button>
 </form>
+{% endblock %}
+
