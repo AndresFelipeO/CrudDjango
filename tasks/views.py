@@ -9,6 +9,7 @@ from django.contrib.auth import login, logout, authenticate #login crea el cooki
 from .forms import TaskForm
 from .models import Task
 from django.utils import timezone
+from django.contrib.auth.decorators import login_required
 # Create your views here.
 
 
@@ -41,13 +42,15 @@ def signup(request):
             "error": 'Contraseña incorrecta'
         })
 
-#redireciona a la pagina de tareas no completadas
+#redireciona a la pagina de tareas no completadas}
+@login_required
 def tasks(request):
     tasks=Task.objects.filter(user=request.user,datecompleted__isnull=True)#devuelve todas las tareas de la base de datos
     return render(request, 'tasks.html',{
         'tasks':tasks,
     })
 #muestra las tareas completadas
+@login_required
 def tasks_completed(request):
     tasks=Task.objects.filter(user=request.user,datecompleted__isnull=False)#devuelve todas las tareas de la base de datos
     return render(request, 'tasks.html',{
@@ -55,6 +58,7 @@ def tasks_completed(request):
     })
 
 #crea una tarea nueva
+@login_required
 def create_task(request):
     if request.method=='GET':
         return render(request,'create_task.html',{
@@ -76,6 +80,7 @@ def create_task(request):
         })
 
 #muestra los detalles de una tarea en especifico y permite modificar
+@login_required
 def task_detail(request,task_id):
     if request.method=='GET': #muestra las tareas
         task=get_object_or_404(Task,pk=task_id,user=request.user)
@@ -98,6 +103,7 @@ def task_detail(request,task_id):
                 })
 
 #Completa las tareas completadas
+@login_required
 def complete_task(request,task_id):
     task=get_object_or_404(Task,pk=task_id,user=request.user)
     if request.method=='POST':
@@ -106,6 +112,7 @@ def complete_task(request,task_id):
         return redirect('tasks')
 
 #Elimina la tarea 
+@login_required
 def delete_task(request,task_id):
     task=get_object_or_404(Task,pk=task_id,user=request.user)
     if request.method=='POST':
@@ -113,6 +120,7 @@ def delete_task(request,task_id):
         return redirect('tasks')
 
 #Cierra la sesion del usuario
+@login_required
 def signout(request):
     logout(request)
     return redirect('home')
