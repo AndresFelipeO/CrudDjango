@@ -26,4 +26,64 @@ class Migration(migrations.Migration):
                 ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
             ],
         ),
+        migrations.CreateModel(
+            name='Rol',
+            fields=[
+                ('rol_id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('rol_descripcion', models.CharField(max_length=100)),
+                
+            ],
+        ),
+        migrations.CreateModel(
+            name='UserRol',
+            fields=[
+                ('userRol_id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
+                ('rol_id', models.ForeignKey(on_delete=models.CASCADE, to='tasks.Rol')),
+                
+            ],
+        ),
+        migrations.CreateModel(
+            name='TipoLabor',
+            fields=[
+                ('tl_id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('description', models.TextField(blank=True)),
+                ('codigo',models.IntegerField()),
+                
+            ],
+        ),
+        migrations.CreateModel(
+            name='Labor',
+            fields=[
+                ('lab_id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('nombre', models.TextField(max_length=100)),
+                ('horas',models.IntegerField(max_length=100)),
+                ('description', models.TextField(blank=True)),
+                ('tl_id',models.ForeignKey(on_delete=models.CASCADE, to='tasks.TipoLabor')),
+                
+            ],
+        ),
+        migrations.CreateModel(
+            name='Periodo',
+            fields=[
+                ('per_id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('nombre', models.TextField(blank=True)),
+                ('fecha_inicio',models.DateTimeField(null=True,blank=True)),
+                ('fecha_fin',models.DateTimeField(null=True,blank=True)),
+                
+            ],
+        ),
+        migrations.CreateModel(
+            name='Evaluacion',
+            fields=[
+                ('eva_id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('eva_estado', models.TextField(blank=True)),
+                ('eva_puntaje',models.DecimalField(blank=True)),
+                ('eva_resultado',models.TextField(blank=True)),
+                ('userRol_id',models.ForeignKey(on_delete=models.CASCADE, to='tasks.UserRol')),
+                ('per_id',models.ForeignKey(on_delete=models.CASCADE, to='tasks.Periodo')),
+                ('lab_id',models.ForeignKey(on_delete=models.CASCADE, to='tasks.Labor')),
+                
+            ],
+        ),
     ]
