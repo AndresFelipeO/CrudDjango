@@ -1,42 +1,44 @@
-{% extends 'base.html' %}
+{% extends 'base2.html' %}
+<style>
+  .bg-blur {
+    backdrop-filter: blur(5px);
+  }
+
+  .bg-light {
+    background-color: rgba(255, 255, 255, 0.5);
+  }
+</style>
 
 {% block content %}
 <main class="container py-5">
-    <section class="card card-body">
-        <h1 class="display-1 text-center">Django App</h1>
-        <p>Dime si tu quieres
-            Que yo te ubique en mi cama
-            Deja el drama
-            Ven y mama
-            Voy a darte duro hasta por la mañana
-            Y que comience la acción
-            Dame tu ubicación
-            Ey, tú sabes que yo le llego y cuando llego
-            Este bicho causa emoción
-            Le bajo el pozo como Poseidón
-            Y le abro las piernas en el balcón
-            Pa' hablarte claro, ma, tú le metes cabrón
-            Me gusta como con la boca me pone' el condón
-            Y te queda mejor, mamá
-            Cuando no me pones na'
-            Este bicho es tuyo
-            Avanza y corre
-            Ven y súbete en la torre
-            Diles
-            Que yo me sé tu' pose' favoritas
-            Que te hablo malo y que eso te excita
-            Que te hago todo lo que necesitas
-            Pa' hacerte venir</p>
-        <div class="text-center">
-            <a class="btn btn-primary" href="/signin/">
-                Signin
-            </a>
-            <a class="btn btn-primary" href="/signup">
-                Signup
-            </a>
+    <div class="row">
+      <div class="col-md-6">
+        <div class="d-flex align-items-center mb-4">
+          <img src="https://revistas.unicauca.edu.co/public/site/images/adminrfsalud/logofooter_(1).png" alt="Logo de FIET" class="mr-2" style="width: 50px;">
+          <h1 class="text-white h4 mb-0">FIET</h1>
         </div>
-        
-
-    </section>
-</main>
+        <h2 class="fw-bold display-4 text-white">Login</h2>
+        <p class="text-white">Quién ha de morir deje su luz a la posteridad.</p>
+      </div>
+      <div class="col-md-6">
+        <form action="/signin/" method="POST" class="card card-body" style="background-color: rgba(255, 255, 255, 0.5); backdrop-filter: blur(5px);">
+          <h1 class="text-center">Signin</h1>
+          {{error}}
+          {% csrf_token %}
+          {{error}}
+          {% csrf_token %}
+          <!--token para verificar que el formulario fue creado para nuestro propio servidor-->
+          <div class="mb-3">
+            <label for="username">Username: </label>
+            <input type="text" name="username" id="username" class="form-control" placeholder="Write your username">
+          </div>
+          <div class="mb-3">
+            <label for="password">Password: </label>
+            <input type="password" name="password" id="password" class="form-control" placeholder="Write your password">
+          </div>
+          <button class="btn btn-primary">Signin</button>
+        </form>        
+      </div>
+    </div>
+  </main>
 {% endblock %}

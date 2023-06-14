@@ -31,7 +31,7 @@ def signup(request):
                     username=request.POST['username'], password=request.POST['password1'])
                 user.save()  # guarda el usuario en la base de datos por defecto
                 login(request, user)
-                return redirect('tasks') #redirecciona a la pagina tasks
+                return redirect('docente_menu') #redirecciona a la pagina tasks
             except IntegrityError:
                 return render(request, 'signup.html', {
                     'form': UserCreationForm,
@@ -41,8 +41,8 @@ def signup(request):
             'form': UserCreationForm,
             "error": 'Contraseña incorrecta'
         })
-
 #redireciona a la pagina de tareas no completadas}
+
 @login_required
 def tasks(request):
     tasks=Task.objects.filter(user=request.user,datecompleted__isnull=True)#devuelve todas las tareas de la base de datos
@@ -142,8 +142,20 @@ def signin(request):
             })
         else:
           login(request, user)
-          return redirect('tasks')  
-
-
-
+          return redirect('docente_menu') 
         
+@login_required
+def docente_menu(request):
+    if request.method == 'GET':
+        return render(request, 'interfazdocente.html')
+    else:
+        return redirect('tasks')
+
+
+@login_required
+def evaluacion_view(request):
+    if request.method == 'POST':
+        # Aquí puedes agregar la lógica para procesar los datos del formulario de evaluación
+        # Puedes acceder a los datos del formulario utilizando request.POST
+        pass
+    return render(request, 'prueba.html')

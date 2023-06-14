@@ -1,0 +1,82 @@
+{% extends 'base.html' %}
+{% block content %}
+<style>
+    .logo {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        width: 50px;
+        height: 50px;
+    }
+
+
+    .transparent-box {
+        background-color: rgba(0, 0, 0, 0.5);
+        margin: 20px auto;
+        padding: 20px;
+        border-radius: 10px;
+        max-width: 500px;
+    }
+
+    .user-info {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start; /* Modificado */
+    }
+
+    .text-center {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        height: 100vh;
+    }
+
+    .form-label {
+        font-size: 30px;
+        color: white;
+    }
+
+    .btn-primary,
+    .btn-secondary {
+        font-size: 30px;
+    }
+</style>
+
+<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/57/Logo_de_la_Universidad_del_Cauca.svg/1200px-Logo_de_la_Universidad_del_Cauca.svg.png" alt="Logo" class="logo">
+
+<main class="container py-5 background">
+    <div class="row">
+        <div class="col-md-6">
+            <div class="user-info">
+                <div class="d-flex align-items-center justify-content-center mb-4">
+                    <img src="https://fiet.unicauca.edu.co/maestriacomputacion/sites/default/files/francisco%20obando.jpg" alt="Imagen de Usuario" class="img-fluid rounded-circle" style="max-width: 200px;">
+                </div>
+                <div class="mb-3">
+                    <label for="periodo" class="form-label">Periodo:</label>
+                    <label for="PeriodoValue" class="form-label">2023-1</label>
+                </div>
+                <div class="mb-3">
+                    <label for="nombre" class="form-label">Nombre:</label>
+                    <label for="NombreValue" class="form-label">Carlos Perez</label>
+                </div>
+                <div class="mb-3">
+                    <label for="identificacion" class="form-label">Identificación:</label>
+                    <label for="IdentificaciónValue" class="form-label">100281239</label>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="text-center">
+                <form method="post" action="{% url 'evaluacion' %}">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-primary btn-lg mb-3">Evaluación</button>
+                </form>
+                <a href="#" class="btn btn-primary btn-lg mb-3">Configuración</a>
+                <button type="submit" class="btn btn-secondary btn-lg">Cerrar sesión</button>
+            </div>
+        </div>
+    </div>
+</main>
+
+{% endblock %}
