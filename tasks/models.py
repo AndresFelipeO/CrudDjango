@@ -14,14 +14,11 @@ class Task(models.Model): #crear una tabla task sql
     def __str__(self):#cuando utilicen este modelo en string va a retornar el titulo
         return self.title+'- by '+self.user.username
 
-#class Usuario(models.Model):
- #   user_id = models.CharField(max_legth=100)
-#    nombre = models.CharField(max_legth=100)
-#    apellido = models.CharField(max_legth=100)
-#    genero = models.CharField(max_legth=1)
-#    estudio = models.CharField(max_legth=100)
-#    correo = models.CharField(max_legth=100)
-#    contrasenia = models.CharField(max_legth=100)
+class Usuario(models.Model):
+    nombre = models.CharField(max_length=100)
+    apellido = models.CharField(max_length=100)
+    genero = models.CharField(max_length=1)
+    estudio = models.CharField(max_length=100)
 
 class Rol(models.Model):    
     rol_descripcion = models.TextField(blank=True)

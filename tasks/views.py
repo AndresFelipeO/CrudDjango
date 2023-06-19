@@ -141,6 +141,9 @@ def signin(request):
             'error': 'Usuario o contraseña incorrectos'
             })
         else:
+          if request.POST['username']=="decano":
+            login(request, user)
+            return redirect('decano_menu')    
           login(request, user)
           return redirect('docente_menu') 
         
@@ -149,7 +152,14 @@ def docente_menu(request):
     if request.method == 'GET':
         return render(request, 'interfazdocente.html')
     else:
-        return redirect('tasks')
+        return redirect('interfazdocente.html')
+
+@login_required
+def decano_menu(request):
+    if request.method == 'GET':
+        return render(request, 'interfazDecano.html')
+    else:
+        return redirect('interfazDecano.html')
 
 
 @login_required

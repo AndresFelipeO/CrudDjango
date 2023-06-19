@@ -5,6 +5,7 @@
 <main class="container">
     <div class="row">
         <div class="col-md-4 offset-md-4 mt-5">
+	<form action="/signup/" method="POST" class="card card-body">
             <h1 class="text-center">Signup</h1>
             {{error}}
             {% csrf_token %} <!--token para verificar que el formulario fue creado para nuestro propio servidor-->
@@ -26,7 +27,7 @@
             <button class="btn btn-primary">
                 Signup
             </button>
-            </form>
+        </form>
         </div>
     </div>
 </main>

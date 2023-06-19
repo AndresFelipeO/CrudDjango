@@ -62,9 +62,9 @@
         </div>
         <div class="col-md-6">
             <div class="text-center">
-                <form method="post" action="{% url 'evaluacion' %}">
+                <form method="post" action="{% url 'signup' %}">
                     {% csrf_token %}
-                    <button type="submit" class="btn btn-primary btn-lg mb-3">Evaluación</button>
+                    <button type="submit" class="btn btn-primary btn-lg mb-3">Registrar Persona</button>
                 </form>
                 
                 <button  type="submit" class="btn btn-secondary btn-lg"><a href="/logout " class="nav-link" >Cerrar Sesión</a></button>
