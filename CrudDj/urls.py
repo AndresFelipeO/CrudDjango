@@ -10,6 +10,7 @@ urlpatterns = [
     path('tasks/completed/',views.tasks_completed,name='tasks_completed'),
     path('docente_menu/', views.docente_menu, name='docente_menu'),
     path('decano_menu/', views.decano_menu, name='decano_menu'),
+    path('coordinador_menu/', views.coordinador_menu, name='coordinador_menu'),
     path('tasks/create/',views.create_task,name='create_tasks'),
     path('tasks/<int:task_id>/',views.task_detail,name='tasks_detail'),
     path('tasks/<int:task_id>/complete',views.complete_task,name='tasks_Complete'),
@@ -17,4 +18,7 @@ urlpatterns = [
     path('logout/',views.signout,name='logout'),
     path('signin/',views.signin,name='signin'),
     path('evaluacion/', views.evaluacion_view, name='evaluacion'),
+    path('labor/', views.labor_view, name='labor'),
+    path('accion_labor/', views.labor_registrar, name='accion_labor'),
+    path('gestionar_evaluacion/', views.gestionar_Eva_view, name='gestionar_evaluacion'),
 ]

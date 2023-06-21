@@ -150,11 +150,14 @@ def signin(request):
             'error': 'Usuario o contraseña incorrectos'
             })
         else:
-          if request.POST['username']=="decano":
+            if request.POST['username']=="decano":
+                login(request, user)
+                return redirect('decano_menu')  
+            elif request.POST['username']=="coordinador":
+                login(request, user)
+                return redirect('coordinador_menu')
             login(request, user)
-            return redirect('decano_menu')    
-          login(request, user)
-          return redirect('docente_menu') 
+            return redirect('docente_menu') 
         
 @login_required
 def docente_menu(request):
@@ -177,9 +180,86 @@ def decano_menu(request):
 
 
 @login_required
+def coordinador_menu(request):
+    usuario=UserDoc.objects.filter(user=request.user).first()#devuelve todas las tareas de la base de datos
+    if request.method == 'GET':
+        return render(request, 'interfazCoordinador.html',{'user':usuario})
+    else:
+        return render(request, 'home.html')
+
+
+@login_required
 def evaluacion_view(request):
     if request.method == 'POST':
         # Aquí puedes agregar la lógica para procesar los datos del formulario de evaluación
         # Puedes acceder a los datos del formulario utilizando request.POST
         pass
     return render(request, 'prueba.html')
+
+
+@login_required
+def labor_view(request):
+    if request.method == 'GET':
+        lb = Labor.objects.all()
+        tipoLabor=TipoLabor.objects.all()
+        return render(request, 'gestionarlabor.html',{'tl':tipoLabor,'labor':lb})
+    return redirect('coordinador_menu')
+
+
+@login_required
+def gestionar_Eva_view(request):
+    if request.method == 'GET':
+        return render(request, 'gestionarautoevaluacion.html')
+    return redirect('coordinador_menu')
+
+@login_required
+def labor_registrar(request):
+    if request.method == 'POST':
+        try:
+            if 'Guardar' in request.POST:
+                tipo_labor_id = request.POST['tipo']
+                try:
+                    tipo_labor = TipoLabor.objects.get(id=tipo_labor_id)
+                    lb = Labor.objects.create(
+                        nombre=request.POST['nombre'],
+                        horas=request.POST['horas'],
+                        tl_id=tipo_labor,
+                        descripcion=request.POST['descripcion']
+                    )
+                    lb.save()
+                    return redirect('labor')
+                except TipoLabor.DoesNotExist:
+                    pass
+            elif 'Eliminar' in request.POST:
+                labor_id = request.POST['Blabor']
+                try:
+                    lb = Labor.objects.get(id=labor_id)
+                    lb.delete()
+                except Labor.DoesNotExist:
+                    pass
+                return redirect('labor')
+            elif 'Editar' in request.POST:
+                labor_id = request.POST['Blabor']
+                tipo_labor_id = request.POST['tipo']
+                try:
+                    tipo_labor = TipoLabor.objects.get(id=tipo_labor_id)
+                    lb = Labor.objects.get(id=labor_id)
+                    lb.nombre=request.POST['nombre']
+                    lb.horas=request.POST['horas']
+                    lb.tl_id=tipo_labor
+                    lb.descripcion=request.POST['descripcion']
+                    lb.save()
+                except Labor.DoesNotExist:
+                    pass
+                return redirect('labor')
+            elif 'Buscar' in request.POST:
+                labor_id = request.POST['Blabor']
+                lb = Labor.objects.all()
+                tipoLabor=TipoLabor.objects.all()
+                lbselect = Labor.objects.get(id=labor_id)
+                tipo_labor_id = lbselect.tl_id.pk
+                tlselect = TipoLabor.objects.get(id=tipo_labor_id)
+                return render(request, 'gestionarlabor.html',{'tl':tipoLabor,'labor':lb,'lbS':lbselect,'tlS':tlselect})    
+        except :    
+            return redirect('labor') 
+    return redirect('labor')

@@ -20,30 +20,47 @@ class UserDoc(models.Model):
     estudio = models.CharField(max_length=100)
     foto=models.TextField(blank=True)
     user=models.ForeignKey(User,on_delete=models.CASCADE)
+    
+    def __str__(self):#cuando utilicen este modelo en string va a retornar el titulo
+        return self.nombre 
+
 
 class Rol(models.Model):    
     rol_descripcion = models.TextField(blank=True)
+    
+    def __str__(self):#cuando utilicen este modelo en string va a retornar el titulo
+        return self.rol_descripcion
 
 class UserRol(models.Model):
     user = models.ForeignKey(User,on_delete=models.CASCADE)
     rol = models.ForeignKey(Rol,on_delete=models.CASCADE)
+    def __str__(self):#cuando utilicen este modelo en string va a retornar el titulo
+        return self.user.username
 
 
 class TipoLabor(models.Model):
     codigo =models.IntegerField()
     descripcion = models.TextField(blank=True)
+    def __str__(self):#cuando utilicen este modelo en string va a retornar el titulo
+        return self.descripcion
 
 class Labor(models.Model):
     nombre = models.TextField(max_length=100)
     horas = models.IntegerField()
     tl_id = models.ForeignKey(TipoLabor,on_delete=models.CASCADE)
     descripcion = models.TextField(blank=True)
+    
+    def __str__(self):#cuando utilicen este modelo en string va a retornar el titulo
+        return self.nombre 
 
 
 class Periodo(models.Model):
     nombre = models.CharField(max_length=100)
     fecha_inicio = models.DateTimeField(null=True,blank=True)
     fecha_fin = models.DateTimeField(null=True,blank=True)
+
+    def __str__(self):#cuando utilicen este modelo en string va a retornar el titulo
+        return self.nombre 
 
 class Evaluacion(models.Model):
     eva_estado = models.CharField(max_length=100)

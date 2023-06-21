@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<main class="container">
+    <div class="row">
+        <div class="col-md-8 offset-md-2 mt-5">
+            <h1 class="text-center">Gestión de Autoevaluación</h1>
+            <form action="/evaluaciones/" method="POST" class="card card-body">
+                {{error}}
+                {% csrf_token %}
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="mb-3">
+                            <label for="periodo">Periodo Académico:</label>
+                            <select name="periodo" id="periodo" class="form-control" required>
+                                {% for periodo in periodos %}
+                                    <option value="{{ periodo.id }}">{{ periodo.nombre }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="docente">Docente:</label>
+                            <select name="docente" id="docente" class="form-control" required>
+                                {% for docente in docentes %}
+                                    <option value="{{ docente.id }}">{{ docente.nombre }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="labor">Nombre de labor o actividad:</label>
+                            <input type="text" name="labor" id="labor" class="form-control" placeholder="Ingrese el nombre de labor" required>
+                        </div>
+                    </div>
+                    <!-- Resto del código -->
+                </div>
+                <div class="mb-3">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <button class="btn btn-primary">Guardar</button>
+                        </div>
+                        <div class="col-md-6">
+                            <button class="btn btn-danger">Cancelar</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</main>
+
+{% endblock %}

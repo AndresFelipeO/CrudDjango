@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+{% block content %}
+<style>
+    .logo {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        width: 50px;
+        height: 50px;
+    }
+    .user-info {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        margin-bottom: 10px;
+        backdrop-filter: blur(8px); /* Efecto de difuminado */
+        background-color: rgba(255, 255, 255, 0.5); /* Fondo transparente blanco */
+        padding: 10px;
+    }
+    .text-center {
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+        flex-direction: column;
+        margin-left: 10px;
+    }
+    .form-label {
+        font-size: 30px;
+        color: black;
+        font-weight: bold;
+    }
+    .btn-primary,
+    .btn-secondary {
+        font-size: 30px;
+        margin-right: 10px;
+    }
+</style>
+
+<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/57/Logo_de_la_Universidad_del_Cauca.svg/1200px-Logo_de_la_Universidad_del_Cauca.svg.png" alt="Logo" class="logo">
+
+<main class="container py-5 background">
+    <div class="row">
+        <div class="col-md-6 d-flex justify-content-center"> <!-- Agregar clases d-flex y justify-content-center -->
+            <div class="user-info">
+                <div id= "img" class="d-flex align-items-center justify-content-center mb-4">
+                    <img src="{{ user.foto }}" alt="Imagen de Usuario" class="img-fluid" style="max-width: 200px;">
+                </div>
+                <div class="mb-3">
+                    <label for="nombre" class="form-label">Periodo:</label>
+                    <label for="NombreValue" class="form-label">2023-1</label>
+                </div>
+                <div class="mb-3">
+                    <label for="nombre" class="form-label">Nombre:</label>
+                    <label for="NombreValue" class="form-label">{{ user.nombre }} {{ user.apellido }}</label>
+                </div>
+                <div class="mb-3">
+                    <label for="identificacion" class="form-label">Cargo:</label>
+                    <label for="IdentificaciónValue" class="form-label">{{ user.estudio }}</label>
+                </div>
+            </div>
+        <div class="col-md-6">
+            <div class="text-center">
+                <button  type="submit" class="btn btn-primary btn-lg mb-3"><a href="/labor " class="nav-link" >Gestión Labor</a></button>
+                <button  type="submit" class="btn btn-primary btn-lg mb-3"><a href="/gestionar_evaluacion " class="nav-link" >Gestionar Autoevaluación</a></button>
+                <button  type="submit" class="btn btn-secondary btn-lg"><a href="/logout" class="nav-link">Cerrar Sesión</a></button>
+            </div>
+        </div>
+    </div>
+</main>
+{% endblock %}

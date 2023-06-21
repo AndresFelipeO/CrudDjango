@@ -37,6 +37,11 @@
                     <a href="/decano_menu" class="nav-link"  >Menú Decano</a>
 
                 </li>
+                {% elif user.username == 'coordinador' %}
+                <li class="nav-item">
+                    <a href="/coordinador_menu" class="nav-link"  >Menú coordinador</a>
+
+                </li>
                 {% else %}
                 <li class="nav-item">
                     <a href="/docente_menu" class="nav-link"  >Menú Docente</a>
