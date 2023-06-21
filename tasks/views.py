@@ -7,7 +7,7 @@ from django.contrib.auth.models import User
 from django.db import IntegrityError
 from django.contrib.auth import login, logout, authenticate #login crea el cookie por nosotros
 from .forms import TaskForm
-from .models import Task
+from .models import *
 from django.utils import timezone
 from django.contrib.auth.decorators import login_required
 # Create your views here.
@@ -149,10 +149,14 @@ def signin(request):
         
 @login_required
 def docente_menu(request):
+    #usuario=get_object_or_404(Task,user=request.user)
+    print(request.user.username)
+    usuario=UserDoc.objects.filter(user=request.user).first()#devuelve todas las tareas de la base de datos
+    print(usuario.nombre)
     if request.method == 'GET':
-        return render(request, 'interfazdocente.html')
+        return render(request, 'interfazdocente.html',{'user':usuario})
     else:
-        return redirect('interfazdocente.html')
+       return render(request, 'home.html')
 
 @login_required
 def decano_menu(request):

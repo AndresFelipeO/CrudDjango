@@ -4,29 +4,25 @@
 
 <main class="container">
     <div class="row">
-        <section class="col-md-4 offset-md-4 mt-5">
-            <form action="/signin/" method="POST" class="card card-body">
+        <div class="col-md-4 offset-md-4 mt-5">
+            <form action="/signin/" method="POST" class="card card-body" style="background-color: rgba(255, 255, 255, 0.5); backdrop-filter: blur(5px);">
                 <h1 class="text-center">Signin</h1>
                 {{error}}
                 {% csrf_token %}
                 {{error}}
-                {% csrf_token %} <!--token para verificar que el formulario fue creado para nuestro propio servidor-->
+                {% csrf_token %}
+                <!--token para verificar que el formulario fue creado para nuestro propio servidor-->
                 <div class="mb-3">
-                    <label for="username">Username: </label>
-                        <input type="text" name="username" id="username" class="form-control" placeholder="Write your username">
+                  <label for="username">Username: </label>
+                  <input type="text" name="username" id="username" class="form-control" placeholder="Write your username">
                 </div>
-                            
                 <div class="mb-3">
-                    <label for="password">Password: </label>
-                        <input type="password" name="password" id="password" class="form-control" placeholder="Write your password">
+                  <label for="password">Password: </label>
+                  <input type="password" name="password" id="password" class="form-control" placeholder="Write your password">
                 </div>
-                <button class="btn btn-primary">
-                    Signin
-                </button>
-            </form>
-        </section>
+                <button class="btn btn-primary">Signin</button>
+              </form>
+        </div>
     </div>
-
 </main>
-
 {% endblock %}

@@ -10,15 +10,16 @@ class Task(models.Model): #crear una tabla task sql
     important=models.BooleanField(default=False)
     user=models.ForeignKey(User,on_delete=models.CASCADE)
 
-
     def __str__(self):#cuando utilicen este modelo en string va a retornar el titulo
         return self.title+'- by '+self.user.username
 
-class Usuario(models.Model):
+class UserDoc(models.Model):
     nombre = models.CharField(max_length=100)
     apellido = models.CharField(max_length=100)
     genero = models.CharField(max_length=1)
     estudio = models.CharField(max_length=100)
+    foto=models.TextField(blank=True)
+    user=models.ForeignKey(User,on_delete=models.CASCADE)
 
 class Rol(models.Model):    
     rol_descripcion = models.TextField(blank=True)
