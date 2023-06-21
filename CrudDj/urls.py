@@ -21,4 +21,7 @@ urlpatterns = [
     path('labor/', views.labor_view, name='labor'),
     path('accion_labor/', views.labor_registrar, name='accion_labor'),
     path('gestionar_evaluacion/', views.gestionar_Eva_view, name='gestionar_evaluacion'),
+    path('g_evaluaciones/', views.gestionar_eva, name='g_evaluaciones'),
+    path('registrar-periodo/', views.periodo_view, name='periodo'),
+    path('accion_periodo/', views.gestionar_periodo, name='accion_periodo'),
 ]

@@ -13,31 +13,25 @@
     <h1 style="text-align: center;">INFORME Y EVALUACION DE ACTIVIDADES DE LABOR DOCENTE - DEPARTAMENTO DE SISTEMAS -
         Facultad de Ingenieria Electronica y Telecomunicaciones</h1>
 
-    <div class="row">
-        <div class="col-md-6">
-            <div class="d-flex align-items-center justify-content-center mb-4">
-                <img src="https://fiet.unicauca.edu.co/maestriacomputacion/sites/default/files/francisco%20obando.jpg"
-                    alt="Imagen de Usuario" class="img-fluid" style="max-width: 200px;">
-            </div>
+    <div class="user-info">
+        <div id="img" class="d-flex align-items-center justify-content-center mb-4">
+
+            <img src="{{ user.foto }}" alt="Imagen de Usuario" class="img-fluid" style="max-width: 200px;">
+
         </div>
-        <div class="col-md-6">
-            <div class="d-flex flex-column align-items-start">
-                <div class="mb-3">
-                    <label for="periodo" class="form-label">Periodo:</label>
-                    <label for="PeriodoValue" class="form-label">2023-1</label>
-                </div>
-                <div class="mb-3">
-                    <label for="nombre" class="form-label">Nombre:</label>
-                    <label for="NombreValue" class="form-label">Andrés Perez</label>
-                </div>
-                <div class="mb-3">
-                    <label for="identificacion" class="form-label">Identificación:</label>
-                    <label for="IdentificacionValue" class="form-label">1023421</label>
-                </div>
-            </div>
+        <div class="mb-3">
+            <label for="nombre" class="form-label">Periodo:</label>
+            <label for="NombreValue" class="form-label">2023-1</label>
+        </div>
+        <div class="mb-3">
+            <label for="nombre" class="form-label">Nombre:</label>
+            <label for="NombreValue" class="form-label">{{ user.nombre }} {{ user.apellido }}</label>
+        </div>
+        <div class="mb-3">
+            <label for="identificacion" class="form-label">Cargo</label>:</label>
+            <label for="IdentificaciónValue" class="form-label">{{ user.estudio }}</label>
         </div>
     </div>
-
 
     <table class="table">
         <thead>
@@ -50,99 +44,41 @@
                 <th>Acto</th>
                 <th>Fecha inicio</th>
                 <th>Fecha fin</th>
-                <th>Estado Resultados</th>
+                <th>Estado</th>
+                <th>Resultados</th>
                 <th>Evaluación</th>
-                <th>Acciones</th>
             </tr>
         </thead>
         <tbody>
+            {% for evaluacion in evaluaciones %}
             <tr>
-                <td contenteditable="true">1</td>
-                <td contenteditable="true">Nombre de labor</td>
-                <td contenteditable="true">Tipo labor</td>
-                <td contenteditable="true">Horas</td>
-                <td contenteditable="true">Descripción</td>
-                <td class="checkbox">
-                    <input type="checkbox">
-                    <label></label>
-                </td>
-                <td contenteditable="true">
-                    <input type="date">
-                </td>
-                <td contenteditable="true">
-                    <input type="date">
-                </td>
-                <td class="checkbox">
-                    <input type="checkbox">
-                    <label></label>
-                </td>
-                <td contenteditable="true">Evaluación</td>
-                <td>
-                    <button class="btn-editar">Editar</button>
-                    <button class="btn-eliminar">Eliminar</button>
-                </td>
+                <td>{{ forloop.counter }}</td>
+                <td>{{ evaluacion.lab_id.nombre }}</td>
+                <td>{{ evaluacion.lab_id.tl_id.descripcion }}</td>
+                <td>{{ evaluacion.lab_id.horas }}</td>
+                <td>{{ evaluacion.lab_id.descripcion }}</td>
+                <td>x</td>
+                <td>{{ evaluacion.per_id.fecha_inicio }}</td>
+                <td>{{ evaluacion.per_id.fecha_fin }}</td>
+                <td>{{ evaluacion.eva_estado }}</td>
+                <td contenteditable="true">{{ evaluacion.eva_resultado }}</td>
+                <td contenteditable="true">{{ evaluacion.eva_puntaje }}</td>
             </tr>
+            {% endfor %}
         </tbody>
     </table>
 
-    <button id="btn-agregar" class="btn btn-primary">Agregar fila</button>
-    <button id="btn-guardar" class="btn btn-success">Guardar</button>
+    <button name="Guardar" id="Guardar" class="btn btn-primary">Guardar</button>
 
     <div class="total-bar">
         <h4>Total</h4>
-        <p id="promedio-evaluacion">-</p>
-    </div>
-
-    <div class="sugerencias">
-        <h4>Sugerencias</h4>
-        <ul id="lista-sugerencias">
-            <li>Sugerencia 1</li>
-            <li>Sugerencia 2</li>
-            <li>Sugerencia 3</li>
-        </ul>
+        <p id="valor-total">-</p>
     </div>
 </div>
 
 <script>
-    // Código JavaScript aquí (si es necesario)
-    document.getElementById("btn-agregar").addEventListener("click", function () {
-        var tableBody = document.querySelector("table tbody");
-        var rowCount = tableBody.rows.length;
-
-        var newRow = document.createElement("tr");
-        newRow.innerHTML = `
-                <td contenteditable="true">${rowCount + 1}</td>
-                <td contenteditable="true"></td>
-                <td contenteditable="true"></td>
-                <td contenteditable="true"></td>
-                <td contenteditable="true"></td>
-                <td class="checkbox">
-                    <input type="checkbox">
-                    <label></label>
-                </td>
-                <td contenteditable="true">
-                    <input type="date">
-                </td>
-                <td contenteditable="true">
-                    <input type="date">
-                </td>
-                <td class="checkbox">
-                    <input type="checkbox">
-                    <label></label>
-                </td>
-                <td contenteditable="true"></td>
-                <td>
-                    <button class="btn-editar">Editar</button>
-                    <button class="btn-eliminar">Eliminar</button>
-                </td>
-            `;
-
-        tableBody.appendChild(newRow);
-    });
-
     function calcularPromedioEvaluacion() {
-        var evaluaciones = document.querySelectorAll("table tbody tr td:nth-child(10)");
-
+        var evaluaciones = document.querySelectorAll("table tbody tr td:nth-child(11)");
         var total = 0;
         var cantidad = evaluaciones.length;
 
@@ -159,22 +95,12 @@
 
     function mostrarPromedioEvaluacion() {
         var promedio = calcularPromedioEvaluacion();
-        var promedioElement = document.getElementById("promedio-evaluacion");
+        var promedioElement = document.getElementById("valor-total");
         promedioElement.textContent = promedio;
     }
 
     mostrarPromedioEvaluacion();
-
-    var sugerenciasVisible = false;
-    var listaSugerencias = document.getElementById("lista-sugerencias");
-
-    document.getElementById("sugerencias").addEventListener("click", function () {
-        sugerenciasVisible = !sugerenciasVisible;
-        if (sugerenciasVisible) {
-            listaSugerencias.style.display = "block";
-        } else {
-            listaSugerencias.style.display = "none";
-        }
-    });
 </script>
+
 {% endblock %}
+

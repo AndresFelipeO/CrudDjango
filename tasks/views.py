@@ -1,4 +1,5 @@
 # View, es para nosotros ejecutar algo cuando una url sea visitada
+from venv import logger
 from django.shortcuts import render, redirect, get_object_or_404
 # importar la clase que me permite crear un formulario ya creado
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
@@ -10,6 +11,7 @@ from .forms import TaskForm
 from .models import *
 from django.utils import timezone
 from django.contrib.auth.decorators import login_required
+from datetime import datetime
 # Create your views here.
 
 
@@ -190,11 +192,19 @@ def coordinador_menu(request):
 
 @login_required
 def evaluacion_view(request):
-    if request.method == 'POST':
-        # Aquí puedes agregar la lógica para procesar los datos del formulario de evaluación
-        # Puedes acceder a los datos del formulario utilizando request.POST
-        pass
-    return render(request, 'prueba.html')
+    if request.method == 'GET':
+        try:
+            usuario=UserDoc.objects.filter(user=request.user).first()
+            userRol=UserRol.objects.get(user=usuario.user.pk)
+            eva = Evaluacion.objects.filter(userRol_id=userRol)
+            print(type(eva))
+            if len(eva)>0:
+                return render(request, 'prueba.html',{'user':usuario,"evaluaciones": eva})
+            return redirect('docente_menu')
+        except Exception as e:
+            logger.exception(e)
+            return redirect('docente_menu')
+    return redirect('docente_menu')
 
 
 @login_required
@@ -205,11 +215,22 @@ def labor_view(request):
         return render(request, 'gestionarlabor.html',{'tl':tipoLabor,'labor':lb})
     return redirect('coordinador_menu')
 
+@login_required
+def periodo_view(request):
+    if request.method == 'GET':
+        prd=Periodo.objects.all()
+        return render(request, 'gestionarPeriodo.html',{'periodos':prd})
+    return redirect('decano_menu')
+
 
 @login_required
 def gestionar_Eva_view(request):
     if request.method == 'GET':
-        return render(request, 'gestionarautoevaluacion.html')
+        eva=Evaluacion.objects.all()
+        perido=Periodo.objects.all()
+        rolUser=UserRol.objects.all()
+        lb = Labor.objects.all()
+        return render(request, 'gestionarautoevaluacion.html',{"periodos":perido,"labors":lb,"userroles":rolUser,"evaluaciones":eva})
     return redirect('coordinador_menu')
 
 @login_required
@@ -233,8 +254,8 @@ def labor_registrar(request):
             elif 'Eliminar' in request.POST:
                 labor_id = request.POST['Blabor']
                 try:
-                    lb = Labor.objects.get(id=labor_id)
-                    lb.delete()
+                    labor = Labor.objects.get(id=labor_id)
+                    labor.delete()
                 except Labor.DoesNotExist:
                     pass
                 return redirect('labor')
@@ -263,3 +284,135 @@ def labor_registrar(request):
         except :    
             return redirect('labor') 
     return redirect('labor')
+
+@login_required
+def gestionar_eva(request):
+    if request.method == 'POST':
+        try:
+            if 'Guardar' in request.POST:
+                perido_id=request.POST['periodo']
+                docente_id=request.POST['rol']
+                labor_id=request.POST['labor']
+                    
+                perido = Periodo.objects.get(id=perido_id)
+                docente =  UserRol.objects.get(id=docente_id)
+                labor = Labor.objects.get(id=labor_id)
+                eva = Evaluacion.objects.create(
+                    eva_estado = request.POST['estado'],
+                    eva_puntaje = 0,
+                    eva_resultado = 0,
+                    userRol_id = docente,
+                    per_id = perido,
+                    lab_id = labor
+                )
+                eva.save()
+                return redirect('gestionar_evaluacion')
+            elif 'Eliminar' in request.POST:
+                evaId = request.POST['evaluacion']
+                try:
+                    ev = Evaluacion.objects.get(id=evaId)
+                    ev.delete()
+                except Evaluacion.DoesNotExist:
+                    pass
+                return redirect('gestionar_evaluacion')
+            elif 'Editar' in request.POST:
+                perido_id=request.POST['periodo']
+                docente_id=request.POST['rol']
+                labor_id=request.POST['labor']
+                evaId = request.POST['evaluacion']
+                
+                perido = Periodo.objects.get(id=perido_id)
+                docente =  UserRol.objects.get(id=docente_id)
+                labor = Labor.objects.get(id=labor_id)
+                
+                try:
+                    ev = Evaluacion.objects.get(id=evaId)
+
+                    ev.eva_estado=request.POST['estado']
+                    ev.eva_puntaje=request.POST['puntaje']
+                    ev.eva_resultado=request.POST['resultado']
+                    ev.userRol_id = docente
+                    ev.per_id=perido
+                    ev.lab_id=labor
+                    ev.save()
+                    return redirect('gestionar_evaluacion')
+                except Labor.DoesNotExist:
+                    pass
+                
+            elif 'Buscar' in request.POST:
+                eva_id = request.POST['evaluacion']
+                evaSelect = Evaluacion.objects.get(id=eva_id)
+                labor_id = evaSelect.lab_id.pk
+                labSelect = Labor.objects.get(id=labor_id)
+                per_id = evaSelect.per_id.pk
+                perSelect = Periodo.objects.get(id=per_id)
+                rol_id = per_id = evaSelect.userRol_id.pk
+                rolSelect = UserRol.objects.get(id=rol_id)
+                eva=Evaluacion.objects.all()
+                perido=Periodo.objects.all()
+                rolUser=UserRol.objects.all()
+                lb = Labor.objects.all()
+                
+                return render(request, 'gestionarautoevaluacion.html',{"periodos":perido,"labors":lb,"userroles":rolUser,"evaluaciones":eva,"evaS":evaSelect,"labS":labSelect,"perS":perSelect,"rolS":rolSelect})   
+        except :    
+            return redirect('gestionar_evaluacion') 
+    return redirect('gestionar_evaluacion')
+
+    
+@login_required
+def gestionar_periodo(request):
+    if request.method == 'POST':
+        try:
+                        
+            if 'Guardar' in request.POST:
+                fecha_inicio_str = request.POST['fecha_inicio']
+                fecha_inicio = datetime.strptime(fecha_inicio_str, '%Y-%m-%d').replace(hour=0, minute=0, second=0)
+                
+                fecha_fin_str = request.POST['fecha_fin']
+                fecha_fin = datetime.strptime(fecha_fin_str, '%Y-%m-%d').replace(hour=23, minute=59, second=59)
+                print("xd")
+                per = Periodo.objects.create(
+                    nombre=request.POST['nombre'],
+                    fecha_inicio=fecha_inicio,
+                    fecha_fin=fecha_fin
+                )
+                per.save()
+                
+                return redirect('periodo')  
+            elif 'Eliminar' in request.POST:
+                perID = request.POST['buscar_periodo']
+                try:
+                    periodo = Periodo.objects.get(id=perID)
+                    periodo.delete()
+                except periodo.DoesNotExist:
+                    pass
+                return redirect('periodo')
+            elif 'Editar' in request.POST:
+                perID = request.POST['buscar_periodo']
+                try:
+                    
+                    fecha_inicio_str = request.POST['fecha_inicio']
+                    fecha_inicio = datetime.strptime(fecha_inicio_str, '%Y-%m-%d').replace(hour=0, minute=0, second=0)
+                    
+                    fecha_fin_str = request.POST['fecha_fin']
+                    fecha_fin = datetime.strptime(fecha_fin_str, '%Y-%m-%d').replace(hour=23, minute=59, second=59)
+                    
+                    periodo = Periodo.objects.get(id=perID)
+                    
+                    periodo.nombre=request.POST['nombre']
+                    periodo.fecha_inicio=fecha_inicio
+                    periodo.fecha_fin=fecha_fin
+                    periodo.save()
+                    return redirect('periodo')
+                except Labor.DoesNotExist:
+                    pass
+            elif 'Buscar' in request.POST:
+                perID = request.POST['buscar_periodo']
+                periodoSelect = Periodo.objects.get(id=perID)
+                fIstr = periodoSelect.fecha_inicio.strftime('%Y-%m-%d')
+                fFstr = periodoSelect.fecha_fin.strftime('%Y-%m-%d')
+                prd=Periodo.objects.all()
+                return render(request, 'gestionarPeriodo.html',{'periodos':prd,"perS":periodoSelect,"fI":fIstr,"fF":fFstr})   
+        except :    
+            return redirect('periodo') 
+    return redirect('periodo')

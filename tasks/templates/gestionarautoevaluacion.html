@@ -6,41 +6,75 @@
     <div class="row">
         <div class="col-md-8 offset-md-2 mt-5">
             <h1 class="text-center">Gestión de Autoevaluación</h1>
-            <form action="/evaluaciones/" method="POST" class="card card-body">
+            <form action="/g_evaluaciones/" method="POST" class="card card-body">
                 {{error}}
                 {% csrf_token %}
                 <div class="row">
-                    <div class="col-md-4">
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label for="evaluacion">Evaluación:</label>
+                            <select name="evaluacion" id="evaluacion" class="form-control" >
+                                <option value="{{ evaS.id }}">{{ evaS.id }}</option>
+                                {% for evaluacion in evaluaciones %}
+                                    <option value="{{ evaluacion.id }}">{{ evaluacion.id }}</option>
+                                {% endfor %}
+                            </select>
+                            <button name="Buscar" id="Buscar" class="btn btn-primary">Buscar</button>
+                        </div>
                         <div class="mb-3">
                             <label for="periodo">Periodo Académico:</label>
-                            <select name="periodo" id="periodo" class="form-control" required>
+                            <select name="periodo" id="periodo" class="form-control" >
+                                <option value="{{ perS.id }}">{{ perS.nombre }}</option>
                                 {% for periodo in periodos %}
                                     <option value="{{ periodo.id }}">{{ periodo.nombre }}</option>
                                 {% endfor %}
                             </select>
                         </div>
                         <div class="mb-3">
-                            <label for="docente">Docente:</label>
-                            <select name="docente" id="docente" class="form-control" required>
-                                {% for docente in docentes %}
-                                    <option value="{{ docente.id }}">{{ docente.nombre }}</option>
+                            <label for="estado">Estado:</label>
+                            <select name="estado" id="estado" class="form-control" >
+                                <option value="{{ evaS.eva_estado }}">{{ evaS.eva_estado }}</option>
+                                <option value="En ejecución">En ejecución</option>
+                                <option value="Terminado">Terminado</option>
+                                <option value="Suspendido">Suspendido</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="puntaje">Puntaje:</label>
+                            <input type="number" name="puntaje" id="puntaje" class="form-control" placeholder="Ingrese el puntaje" value="{{evaS.eva_puntaje}}">
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label for="labor">Labor:</label>
+                            <select name="labor" id="labor" class="form-control" >
+                                <option value="{{ labS.id }}">{{ labS.nombre }}</option>
+                                {% for labor in labors %}
+                                    <option value="{{ labor.id }}">{{ labor.nombre }}</option>
                                 {% endfor %}
                             </select>
                         </div>
                         <div class="mb-3">
-                            <label for="labor">Nombre de labor o actividad:</label>
-                            <input type="text" name="labor" id="labor" class="form-control" placeholder="Ingrese el nombre de labor" required>
+                            <label for="rol">Rol Usuario:</label>
+                            <select name="rol" id="rol" class="form-control" >
+                                <option value="{{ rolS.id }}">{{ rolS }}</option>
+                                {% for userrol in userroles %}
+                                    <option value="{{ userrol.id }}">{{ userrol }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="resultado">Resultado:</label>
+                            <input type="text" name="resultado" id="resultado" class="form-control" placeholder="Ingrese el resultado" value="{{evaS.eva_resultado}}">
                         </div>
                     </div>
-                    <!-- Resto del código -->
                 </div>
                 <div class="mb-3">
                     <div class="row">
                         <div class="col-md-6">
-                            <button class="btn btn-primary">Guardar</button>
-                        </div>
-                        <div class="col-md-6">
-                            <button class="btn btn-danger">Cancelar</button>
+                            <button name="Guardar" id="Guardar" class="btn btn-primary">Guardar</button>
+                            <button name="Editar" id="Editar" class="btn btn-warning">Editar</button>
+                            <button name="Eliminar" id="Eliminar" class="btn btn-danger">Eliminar</button>
                         </div>
                     </div>
                 </div>
