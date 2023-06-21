@@ -29,9 +29,18 @@ def signup(request):
                 # Se ejecuto el  python 'manage.py migrate' y se crearon tablas sqlite por defecto
                 user = User.objects.create_user(
                     username=request.POST['username'], password=request.POST['password1'])
+                userDoc = UserDoc.objects.create(
+
+                    nombre = request.POST['nombre'],
+                    apellido = request.POST['apellido'],
+                    genero = request.POST['genero'],
+                    estudio = request.POST['estudio'],
+                    foto=request.POST['foto'],
+                    user=user
+                )
                 user.save()  # guarda el usuario en la base de datos por defecto
-                login(request, user)
-                return redirect('docente_menu') #redirecciona a la pagina tasks
+                userDoc.save()
+                return redirect('decano_menu') #redirecciona a la pagina tasks
             except IntegrityError:
                 return render(request, 'signup.html', {
                     'form': UserCreationForm,
@@ -150,9 +159,8 @@ def signin(request):
 @login_required
 def docente_menu(request):
     #usuario=get_object_or_404(Task,user=request.user)
-    print(request.user.username)
+   
     usuario=UserDoc.objects.filter(user=request.user).first()#devuelve todas las tareas de la base de datos
-    print(usuario.nombre)
     if request.method == 'GET':
         return render(request, 'interfazdocente.html',{'user':usuario})
     else:
@@ -160,10 +168,12 @@ def docente_menu(request):
 
 @login_required
 def decano_menu(request):
+    usuario=UserDoc.objects.filter(user=request.user).first()#devuelve todas las tareas de la base de datos
+   
     if request.method == 'GET':
-        return render(request, 'interfazDecano.html')
+        return render(request, 'interfazDecano.html',{'user':usuario})
     else:
-        return redirect('interfazDecano.html')
+        return render(request, 'home.html')
 
 
 @login_required

@@ -4,56 +4,63 @@
 
 <main class="container">
     <div class="row">
-        <div class="col-md-4 offset-md-4 mt-5">
-	<form action="/signup/" method="POST" class="card card-body">
-            <h1 class="text-center">Signup</h1>
-            {{error}}
-            {% csrf_token %} <!--token para verificar que el formulario fue creado para nuestro propio servidor-->
-            <div class="mb-3">
-                <label for="username">Username: </label>
-                <input type="text" name="username" id="username" class="form-control" placeholder="Write your username">
-            </div>
-            
-            <div class="mb-3">
-                <label for="password">Password: </label>
-                <input type="password" name="password1" id="password1" class="form-control" placeholder="Write your password">
-            </div>
+        <div class="col-md-6 offset-md-3 mt-5">
+            <h1 class="text-center">Registro</h1>
+            <form action="/signup/" method="POST" class="card card-body">
+                {{error}}
+                {% csrf_token %}
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label for="username">Nombre de usuario:</label>
+                            <input type="text" name="username" id="username" class="form-control" placeholder="Ingresa tu nombre de usuario" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="password1">Contraseña:</label>
+                            <input type="password" name="password1" id="password1" class="form-control" placeholder="Ingresa tu contraseña" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="password2">Confirmar contraseña:</label>
+                            <input type="password" name="password2" id="password2" class="form-control" placeholder="Confirma tu contraseña" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="nombre">Nombre:</label>
+                            <input type="text" name="nombre" id="nombre" class="form-control" placeholder="Ingresa tu nombre" required>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label for="apellido">Apellido:</label>
+                            <input type="text" name="apellido" id="apellido" class="form-control" placeholder="Ingresa tu apellido" required>
+                        </div>
 
-            <div class="mb-3">
-                <label for="password2">Confirm your Password: </label>
-                <input type="password" name="password2" id="password2" class="form-control" placeholder="Confirm your password">
-            </div>
-            
-            <div class="mb-3">
-                <label for="nombre">Nombre: </label>
-                <input type="text" name="nombre" id="nombre" class="form-control" placeholder="Write your name">
-            </div>
-            
-            <div class="mb-3">
-                <label for="apellido">Apellido: </label>
-                <input type="text" name="apellido" id="apellido" class="form-control" placeholder="Write your last name">
-            </div>
-            
-            <div class="mb-3">
-                <label for="genero">Genero: </label>
-                <input type="text" name="genero" id="genero" class="form-control" placeholder="Write your gender">
-            </div>
-            
-            <div class="mb-3">
-                <label for="estudio">Estudio: </label>
-                <input type="text" name="estudio" id="estudio" class="form-control" placeholder="Write your study">
-            </div>
-            
-            <div class="mb-3">
-                <label for="foto">Foto: </label>
-                <input type="text" name="foto" id="foto" class="form-control" placeholder="Add your photo URL">
-            </div>
+                        <div class="mb-3">
+                            <label for="genero">Género:</label>
+                            <input type="text" name="genero" id="genero" class="form-control" placeholder="Ingresa tu género" required>
+                        </div>
 
-            <button class="btn btn-primary">
-                Signup
-            </button>
-        </form>
+                        <div class="mb-3">
+                            <label for="estudio">Estudio:</label>
+                            <input type="text" name="estudio" id="estudio" class="form-control" placeholder="Ingresa tu nivel de estudio" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="foto">Foto:</label>
+                            <input type="text" name="foto" id="foto" class="form-control" placeholder="Agrega la URL de tu foto" required>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-12 text-center">
+                        <button class="btn btn-primary">Registrarse</button>
+                    </div>
+                </div>
+            </form>
         </div>
     </div>
 </main>
+
+<a href="/" class="btn btn-link fixed-top ml-3 mt-3">Inicio</a>
+
 {% endblock %}
