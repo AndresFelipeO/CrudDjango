@@ -67,7 +67,7 @@
                     <input type="hidden" name="cambios[{{ forloop.counter }}][puntaje]" value="{{ evaluacion.eva_puntaje }}">
                     {% else %}
                     <td name="res{{ forloop.counter }}" id="res{{ forloop.counter }}">{{ evaluacion.eva_resultado }}</td>
-                    <td name="pun{{ forloop.counter }}" id="pun{{ forloop.counter }}">{{ evaluacion.eva_puntaje }}</td>
+                    <td name="pun{{ forloop.counter }}" id="pun{{ forloop.counter }}" contenteditable="true" oninput="actualizarValorPuntaje(this)" min="0" max="100">{{ evaluacion.eva_puntaje }}</td>
                     
                     {% endif %}
                    <!--  asasas-->
@@ -126,5 +126,22 @@
     guardarButton.addEventListener("click", function() {
         alert("Guardado exitoso");
     });
+
+    function actualizarValorPuntaje(elemento) {
+        var valor = elemento.textContent;
+        var id2 = elemento.id.replace("pun", ""); // Obtener el número de iteración
+        var inputPuntaje = document.querySelector('input[name="cambios[' + id2 + '][puntaje]"]');
+        
+        // Validate the score
+        var puntaje = parseFloat(valor);
+        if (isNaN(puntaje) || puntaje < 0 || puntaje > 100) {
+            alert("El puntaje debe estar entre 1 y 100.");
+            elemento.textContent = inputPuntaje.value; // Reset the displayed value
+            return;
+        }
+        
+        inputPuntaje.value = valor;
+    }
+
 </script>
 {% endblock %}

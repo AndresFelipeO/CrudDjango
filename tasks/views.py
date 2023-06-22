@@ -210,7 +210,7 @@ def evaluacion_view(request):
             userRol=UserRol.objects.filter(user=usuario.user.pk).first()
             
             eva = Evaluacion.objects.filter(userRol_id=userRol)
-            print(type(eva))
+           
             if len(eva)>0:
                 return render(request, 'prueba.html',{'user':usuario,"evaluaciones": eva})
             return redirect('docente_menu')
@@ -315,14 +315,22 @@ def gestionar_eva(request):
                 perido_id=request.POST['periodo']
                 docente_id=request.POST['rol']
                 labor_id=request.POST['labor']
+                puntaje = request.POST['puntaje']
+                evaValor = request.POST['resultado']
+
+                if puntaje == '':
+                    puntaje = 0
+                
+                if evaValor == '':
+                    evaValor = 0
                     
                 perido = Periodo.objects.get(id=perido_id)
                 docente =  UserRol.objects.get(id=docente_id)
                 labor = Labor.objects.get(id=labor_id)
                 eva = Evaluacion.objects.create(
                     eva_estado = request.POST['estado'],
-                    eva_puntaje = 0,
-                    eva_resultado = 0,
+                    eva_puntaje = puntaje,
+                    eva_resultado = evaValor,
                     userRol_id = docente,
                     per_id = perido,
                     lab_id = labor
@@ -392,7 +400,7 @@ def gestionar_periodo(request):
                 
                 fecha_fin_str = request.POST['fecha_fin']
                 fecha_fin = datetime.strptime(fecha_fin_str, '%Y-%m-%d').replace(hour=23, minute=59, second=59)
-                print("xd")
+             
                 per = Periodo.objects.create(
                     nombre=request.POST['nombre'],
                     fecha_inicio=fecha_inicio,
@@ -457,7 +465,7 @@ def gestionar_eva_doc(request):
                         }
                         cambios.append(cambio)
                 
-                print(cambios)
+            
                 for cambio in cambios:
                     evaluacion_id = cambio['id']
                     resultado = cambio['resultado']
