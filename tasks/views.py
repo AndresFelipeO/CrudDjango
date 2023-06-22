@@ -138,29 +138,36 @@ def signout(request):
 
 #permite atenticar al usuario con una cuenta ya creada
 def signin(request):
-    if request.method == 'GET':
+    try:
+        if request.method == 'GET':
+            return render(request, 'signin.html', {
+                'form': AuthenticationForm
+            })
+        else:
+            user = authenticate(
+                request, username=request.POST['username'], password=request.POST['password'])
+            
+            if user is None:
+                return render(request, 'signin.html', {
+                'form': AuthenticationForm,
+                'error': 'Usuario o contraseña incorrectos'
+                })
+            else:
+                
+                userRol=UserRol.objects.filter(user=user).first()
+                if userRol.rol.rol_descripcion=='decano':
+                    login(request, user)
+                    return redirect('decano_menu')  
+                elif userRol.rol.rol_descripcion=="coordinador":
+                    login(request, user)
+                    return redirect('coordinador_menu')
+                login(request, user)
+                return redirect('docente_menu') 
+    except:
         return render(request, 'signin.html', {
             'form': AuthenticationForm
         })
-    else:
-        user = authenticate(
-            request, username=request.POST['username'], password=request.POST['password'])
-        
-        if user is None:
-            return render(request, 'signin.html', {
-            'form': AuthenticationForm,
-            'error': 'Usuario o contraseña incorrectos'
-            })
-        else:
-            if request.POST['username']=="decano":
-                login(request, user)
-                return redirect('decano_menu')  
-            elif request.POST['username']=="coordinador":
-                login(request, user)
-                return redirect('coordinador_menu')
-            login(request, user)
-            return redirect('docente_menu') 
-        
+
 @login_required
 def docente_menu(request):
     #usuario=get_object_or_404(Task,user=request.user)
@@ -173,7 +180,8 @@ def docente_menu(request):
 
 @login_required
 def decano_menu(request):
-    if request.user.username=='decano':
+    userRol=UserRol.objects.filter(user=request.user).first()
+    if userRol.rol.rol_descripcion=='decano':
         usuario=UserDoc.objects.filter(user=request.user).first()#devuelve todas las tareas de la base de datos
     
         if request.method == 'GET':
@@ -185,7 +193,8 @@ def decano_menu(request):
 
 @login_required
 def coordinador_menu(request):
-    if request.user.username=='coordinador':
+    userRol=UserRol.objects.filter(user=request.user).first()
+    if userRol.rol.rol_descripcion=='coordinador':
         usuario=UserDoc.objects.filter(user=request.user).first()#devuelve todas las tareas de la base de datos
         if request.method == 'GET':
             return render(request, 'interfazCoordinador.html',{'user':usuario})
@@ -198,7 +207,7 @@ def evaluacion_view(request):
     if request.method == 'GET':
         try:
             usuario=UserDoc.objects.filter(user=request.user).first()
-            userRol=UserRol.objects.get(user=usuario.user.pk)
+            userRol=UserRol.objects.filter(user=usuario.user.pk).first()
             
             eva = Evaluacion.objects.filter(userRol_id=userRol)
             print(type(eva))
@@ -475,11 +484,14 @@ def gestionar_user_rol(request):
                 userObj = User.objects.get(id=userID)
                 rolID = request.POST['rol']
                 rolObj = Rol.objects.get(id=rolID)
-                uRol = UserRol.objects.create(
-                    user = userObj,
-                    rol = rolObj
-                )
-                uRol.save()
+                UsRols = UserRol.objects.filter(user=userObj)
+                if len(UsRols)==0:
+                    uRol = UserRol.objects.create(
+                        user = userObj,
+                        rol = rolObj
+                    )
+                    uRol.save()
+                  
                 
                 return redirect('rol_view')  
             elif 'Eliminar' in request.POST:
@@ -507,12 +519,14 @@ def gestionar_user_rol(request):
                 except Labor.DoesNotExist:
                     pass
             elif 'Buscar' in request.POST:
+                
                 userRolID = request.POST['RolUsusario']
                 userRolSelect = UserRol.objects.get(id=userRolID)
                 usuario=UserDoc.objects.all()
                 rol=Rol.objects.all()
                 userRol=UserRol.objects.all()
                 return render(request, 'asignarRoles.html',{'usuarios':usuario,'roles':rol,'rolusers':userRol,'urS':userRolSelect})   
-        except :    
+        except Exception as e:
+            logger.exception(e)  
             return redirect('rol_view') 
     return redirect('rol_view')
