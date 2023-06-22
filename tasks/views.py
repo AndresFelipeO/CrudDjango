@@ -171,10 +171,10 @@ def signin(request):
 @login_required
 def docente_menu(request):
     #usuario=get_object_or_404(Task,user=request.user)
-    
+    userRol=UserRol.objects.filter(user=request.user).first()
     usuario=UserDoc.objects.filter(user=request.user).first()#devuelve todas las tareas de la base de datos
     if request.method == 'GET':
-        return render(request, 'interfazdocente.html',{'user':usuario})
+        return render(request, 'interfazdocente.html',{'user':usuario,"urol":userRol})
     else:
        return render(request, 'home.html')
 
@@ -185,7 +185,7 @@ def decano_menu(request):
         usuario=UserDoc.objects.filter(user=request.user).first()#devuelve todas las tareas de la base de datos
     
         if request.method == 'GET':
-            return render(request, 'interfazDecano.html',{'user':usuario})
+            return render(request, 'interfazDecano.html',{'user':usuario,"urol":userRol})
         else:
             return render(request, 'home.html')
     return redirect('logout')
@@ -197,7 +197,7 @@ def coordinador_menu(request):
     if userRol.rol.rol_descripcion=='coordinador':
         usuario=UserDoc.objects.filter(user=request.user).first()#devuelve todas las tareas de la base de datos
         if request.method == 'GET':
-            return render(request, 'interfazCoordinador.html',{'user':usuario})
+            return render(request, 'interfazCoordinador.html',{'user':usuario,"urol":userRol})
         else:
             return render(request, 'home.html')
     return redirect('logout')

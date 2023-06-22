@@ -29,29 +29,19 @@
           </button>
           <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav ms-auto">
-               
-                {% if user.is_authenticated %}
-                
-                {% if user.username == 'decano' %}
+                {% if urol.rol.rol_descripcion == 'decano' %}
                 <li class="nav-item">
                     <a href="/decano_menu" class="nav-link"  >Menú Decano</a>
-
                 </li>
-                {% elif user.username == 'coordinador' %}
+                {% elif urol.rol.rol_descripcion == 'coordinador' %}
                 <li class="nav-item">
                     <a href="/coordinador_menu" class="nav-link"  >Menú coordinador</a>
 
                 </li>
-                {% else %}
+                {% endif %}
                 <li class="nav-item">
                     <a href="/docente_menu" class="nav-link"  >Menú Docente</a>s
-                </li>   
-                {% endif %}
-                
-              
-             
-                {% else %}
-                {% endif %}
+                </li>  
             </ul>
           </div>
         </div>
