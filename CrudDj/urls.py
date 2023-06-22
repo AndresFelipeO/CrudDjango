@@ -24,4 +24,9 @@ urlpatterns = [
     path('g_evaluaciones/', views.gestionar_eva, name='g_evaluaciones'),
     path('registrar-periodo/', views.periodo_view, name='periodo'),
     path('accion_periodo/', views.gestionar_periodo, name='accion_periodo'),
+    path('eva_doc/', views.gestionar_eva_doc, name='eva_doc'),
+    path('rol_view/', views.rol_view, name='rol_view'),
+    path('accion_rol/', views.gestionar_user_rol, name='accion_rol'),
+    
 ]
+ 

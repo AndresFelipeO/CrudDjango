@@ -10,75 +10,97 @@
 </style>
 {% block content %}
 <div class="container">
-    <h1 style="text-align: center;">INFORME Y EVALUACION DE ACTIVIDADES DE LABOR DOCENTE - DEPARTAMENTO DE SISTEMAS -
-        Facultad de Ingenieria Electronica y Telecomunicaciones</h1>
-
-    <div class="user-info">
-        <div id="img" class="d-flex align-items-center justify-content-center mb-4">
-
-            <img src="{{ user.foto }}" alt="Imagen de Usuario" class="img-fluid" style="max-width: 200px;">
-
+    <h2 style="text-align: center;">INFORME Y EVALUACION DE ACTIVIDADES DE LABOR DOCENTE - DEPARTAMENTO DE SISTEMAS -
+        Facultad de Ingenieria Electronica y Telecomunicaciones</h2>
+        <div class="user-info">
+            <div id="img" class="d-flex align-items-center justify-content-center mb-4">
+                <img src="{{ user.foto }}" alt="Imagen de Usuario" class="img-fluid" style="max-width: 200px; float: left;">
+            </div>
+            <div class="mb-3">
+                <label for="nombre" class="form-label"><strong>Nombre:<strong></label>
+                <label for="NombreValue" class="form-label">{{ user.nombre }} {{ user.apellido }}</label>
+            </div>
+            <div class="mb-3">
+                <label for="identificacion" class="form-label"><strong>Cargo:<strong></label>
+                <label for="IdentificaciónValue" class="form-label">{{ user.estudio }}</label>
+            </div>
         </div>
-        <div class="mb-3">
-            <label for="nombre" class="form-label">Periodo:</label>
-            <label for="NombreValue" class="form-label">2023-1</label>
-        </div>
-        <div class="mb-3">
-            <label for="nombre" class="form-label">Nombre:</label>
-            <label for="NombreValue" class="form-label">{{ user.nombre }} {{ user.apellido }}</label>
-        </div>
-        <div class="mb-3">
-            <label for="identificacion" class="form-label">Cargo</label>:</label>
-            <label for="IdentificaciónValue" class="form-label">{{ user.estudio }}</label>
-        </div>
-    </div>
+    <form action="/eva_doc/"  method="POST" class="card card-body">
+        {{error}}
+        {% csrf_token %}
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>n°</th>
+                    <th>Nombre de labor</th>
+                    <th>Tipo labor</th>
+                    <th>Horas</th>
+                    <th>Descripción</th>
+                    <th>Acto</th>
+                    <th>Fecha inicio</th>
+                    <th>Fecha fin</th>
+                    <th>Estado</th>
+                    <th>Periodo</th>
+                    <th>Resultados</th>
+                    <th>Evaluación</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for evaluacion in evaluaciones %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{ evaluacion.lab_id.nombre }}</td>
+                    <td>{{ evaluacion.lab_id.tl_id.descripcion }}</td>
+                    <td>{{ evaluacion.lab_id.horas }}</td>
+                    <td>{{ evaluacion.lab_id.descripcion }}</td>
+                    <td>x</td>
+                    <td>{{ evaluacion.per_id.fecha_inicio }}</td>
+                    <td>{{ evaluacion.per_id.fecha_fin }}</td>
+                    <td>{{ evaluacion.eva_estado }}</td>
+                    <td>{{ evaluacion.per_id.nombre }}</td>
+                    {% if evaluacion.eva_estado == 'En ejecución' %}
+                    <td name="res{{ forloop.counter }}" id="res{{ forloop.counter }}" contenteditable="true" oninput="actualizarValorResultado(this)">{{ evaluacion.eva_resultado }}</td>
+                    <td name="pun{{ forloop.counter }}" id="pun{{ forloop.counter }}" contenteditable="true" oninput="actualizarValorPuntaje(this)">{{ evaluacion.eva_puntaje }}</td>
+                    <input type="hidden" name="cambios[{{ forloop.counter }}][id]" value="{{ evaluacion.id }}">
+                    <input type="hidden" name="cambios[{{ forloop.counter }}][estado]" value="{{ evaluacion.eva_estado }}">
+                    <input type="hidden" name="cambios[{{ forloop.counter }}][resultado]" value="{{ evaluacion.eva_resultado }}">
+                    <input type="hidden" name="cambios[{{ forloop.counter }}][puntaje]" value="{{ evaluacion.eva_puntaje }}">
+                    {% else %}
+                    <td name="res{{ forloop.counter }}" id="res{{ forloop.counter }}">{{ evaluacion.eva_resultado }}</td>
+                    <td name="pun{{ forloop.counter }}" id="pun{{ forloop.counter }}">{{ evaluacion.eva_puntaje }}</td>
+                    
+                    {% endif %}
+                   <!--  asasas-->
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
 
-    <table class="table">
-        <thead>
-            <tr>
-                <th>n°</th>
-                <th>Nombre de labor</th>
-                <th>Tipo labor</th>
-                <th>Horas</th>
-                <th>Descripción</th>
-                <th>Acto</th>
-                <th>Fecha inicio</th>
-                <th>Fecha fin</th>
-                <th>Estado</th>
-                <th>Resultados</th>
-                <th>Evaluación</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for evaluacion in evaluaciones %}
-            <tr>
-                <td>{{ forloop.counter }}</td>
-                <td>{{ evaluacion.lab_id.nombre }}</td>
-                <td>{{ evaluacion.lab_id.tl_id.descripcion }}</td>
-                <td>{{ evaluacion.lab_id.horas }}</td>
-                <td>{{ evaluacion.lab_id.descripcion }}</td>
-                <td>x</td>
-                <td>{{ evaluacion.per_id.fecha_inicio }}</td>
-                <td>{{ evaluacion.per_id.fecha_fin }}</td>
-                <td>{{ evaluacion.eva_estado }}</td>
-                <td contenteditable="true">{{ evaluacion.eva_resultado }}</td>
-                <td contenteditable="true">{{ evaluacion.eva_puntaje }}</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-
-    <button name="Guardar" id="Guardar" class="btn btn-primary">Guardar</button>
-
+        <button name="Guardar" id="Guardar" class="btn btn-primary">Guardar</button>
+    </form>
     <div class="total-bar">
         <h4>Total</h4>
-        <p id="valor-total">-</p>
     </div>
+        <p id="valor-total">-</p>
 </div>
 
 <script>
+
+    function actualizarValorResultado(elemento) {
+        var valor = elemento.textContent;
+        var id = elemento.id.replace("res", ""); // Obtener el número de iteración
+        var inputResultado = document.querySelector('input[name="cambios[' + id + '][resultado]"]');
+        inputResultado.value = valor;
+    }
+    function actualizarValorPuntaje(elemento) {
+        var valor = elemento.textContent;
+        var id2 = elemento.id.replace("pun", ""); // Obtener el número de iteración
+        var inputPuntaje = document.querySelector('input[name="cambios[' + id2 + '][puntaje]"]');
+        inputPuntaje.value = valor;
+    }
+
     function calcularPromedioEvaluacion() {
-        var evaluaciones = document.querySelectorAll("table tbody tr td:nth-child(11)");
+        var evaluaciones = document.querySelectorAll("table tbody tr td:nth-child(12)");
         var total = 0;
         var cantidad = evaluaciones.length;
 
@@ -98,9 +120,11 @@
         var promedioElement = document.getElementById("valor-total");
         promedioElement.textContent = promedio;
     }
-
     mostrarPromedioEvaluacion();
+
+    var guardarButton = document.getElementById("Guardar");
+    guardarButton.addEventListener("click", function() {
+        alert("Guardado exitoso");
+    });
 </script>
-
 {% endblock %}
-

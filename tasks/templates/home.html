@@ -17,26 +17,26 @@
           <img src="https://revistas.unicauca.edu.co/public/site/images/adminrfsalud/logofooter_(1).png" alt="Logo de FIET" class="mr-2" style="width: 50px;">
           <h1 class="text-white h4 mb-0">FIET</h1>
         </div>
-        <h2 class="fw-bold display-4 text-white">Login</h2>
+        <h2 class="fw-bold display-4 text-white">Unicauca App</h2>
         <p class="text-white">Sistema De Administración Universidad Del Cauca.</p>
       </div>
       <div class="col-md-6">
         <form action="/signin/" method="POST" class="card card-body" style="background-color: rgba(255, 255, 255, 0.5); backdrop-filter: blur(5px);">
-          <h1 class="text-center">Signin</h1>
+          <h1 class="text-center">Iniciar Sesion</h1>
           {{error}}
           {% csrf_token %}
           {{error}}
           {% csrf_token %}
           <!--token para verificar que el formulario fue creado para nuestro propio servidor-->
           <div class="mb-3">
-            <label for="username">Username: </label>
-            <input type="text" name="username" id="username" class="form-control" placeholder="Write your username">
+            <label for="username">Usuario: </label>
+            <input type="text" name="username" id="username" class="form-control" placeholder="Escribe tu usuario">
           </div>
           <div class="mb-3">
-            <label for="password">Password: </label>
-            <input type="password" name="password" id="password" class="form-control" placeholder="Write your password">
+            <label for="password">Contraseña: </label>
+            <input type="password" name="password" id="password" class="form-control" placeholder="Escribe tu contraseña">
           </div>
-          <button class="btn btn-primary">Signin</button>
+          <button class="btn btn-primary">Ingresar</button>
         </form>        
       </div>
     </div>

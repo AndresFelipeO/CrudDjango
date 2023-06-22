@@ -35,7 +35,7 @@ class UserRol(models.Model):
     user = models.ForeignKey(User,on_delete=models.CASCADE)
     rol = models.ForeignKey(Rol,on_delete=models.CASCADE)
     def __str__(self):#cuando utilicen este modelo en string va a retornar el titulo
-        return self.user.username
+        return self.user.username+"-"+self.rol.rol_descripcion
 
 
 class TipoLabor(models.Model):

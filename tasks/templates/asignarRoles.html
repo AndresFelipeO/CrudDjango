@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<main class="container">
+    <div class="row">
+        <div class="col-md-6 offset-md-3 mt-5">
+            <h1 class="text-center">Asignar Rol: </h1>
+            <form action="/accion_rol/" method="POST" class="card card-body">
+                {{error}}
+                {% csrf_token %}
+
+                <div class="mb-3">
+                    <label for="RolUsusario">RolUsusario:</label>
+                    <select name="RolUsusario" id="RolUsusario" class="form-control" >
+                        <option value="{{ urS.id }}">{{ urS }}</option>
+                        {% for roluser in rolusers %}
+                            <option value="{{ roluser.id }}">{{ roluser }}</option>
+                        {% endfor %}
+                    </select>
+                    <button name="Buscar" id="Buscar" class="btn btn-primary">Buscar</button>
+                </div>
+
+                <div class="mb-3">
+                    <label for="usuario">Usuario:</label>
+                    <select name="usuario" id="usuario" class="form-control">
+                        <option value="{{ urS.user.pk }}">{{ urS.user }}</option>
+                        {% for objUsuario in usuarios %}
+                            <option value="{{ objUsuario.user.pk }}">{{ objUsuario.user }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label for="rol">Rol:</label>
+                    <select name="rol" id="rol" class="form-control">
+                        <option value="{{ urS.rol.pk }}">{{ urS.rol.rol_descripcion }}</option>
+                        {% for objRol in roles %}
+                            <option value="{{ objRol.id }}">{{ objRol.rol_descripcion }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <button name="Guardar" id="Guardar" class="btn btn-primary">Guardar</button>
+                    <button name="Editar" id="Editar" class="btn btn-warning">Editar</button>
+                    <button name="Eliminar" id="Eliminar" class="btn btn-danger">Eliminar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</main>
+
+{% endblock %}

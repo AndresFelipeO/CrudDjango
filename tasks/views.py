@@ -164,7 +164,7 @@ def signin(request):
 @login_required
 def docente_menu(request):
     #usuario=get_object_or_404(Task,user=request.user)
-   
+    
     usuario=UserDoc.objects.filter(user=request.user).first()#devuelve todas las tareas de la base de datos
     if request.method == 'GET':
         return render(request, 'interfazdocente.html',{'user':usuario})
@@ -173,22 +173,25 @@ def docente_menu(request):
 
 @login_required
 def decano_menu(request):
-    usuario=UserDoc.objects.filter(user=request.user).first()#devuelve todas las tareas de la base de datos
-   
-    if request.method == 'GET':
-        return render(request, 'interfazDecano.html',{'user':usuario})
-    else:
-        return render(request, 'home.html')
+    if request.user.username=='decano':
+        usuario=UserDoc.objects.filter(user=request.user).first()#devuelve todas las tareas de la base de datos
+    
+        if request.method == 'GET':
+            return render(request, 'interfazDecano.html',{'user':usuario})
+        else:
+            return render(request, 'home.html')
+    return redirect('logout')
 
 
 @login_required
 def coordinador_menu(request):
-    usuario=UserDoc.objects.filter(user=request.user).first()#devuelve todas las tareas de la base de datos
-    if request.method == 'GET':
-        return render(request, 'interfazCoordinador.html',{'user':usuario})
-    else:
-        return render(request, 'home.html')
-
+    if request.user.username=='coordinador':
+        usuario=UserDoc.objects.filter(user=request.user).first()#devuelve todas las tareas de la base de datos
+        if request.method == 'GET':
+            return render(request, 'interfazCoordinador.html',{'user':usuario})
+        else:
+            return render(request, 'home.html')
+    return redirect('logout')
 
 @login_required
 def evaluacion_view(request):
@@ -196,6 +199,7 @@ def evaluacion_view(request):
         try:
             usuario=UserDoc.objects.filter(user=request.user).first()
             userRol=UserRol.objects.get(user=usuario.user.pk)
+            
             eva = Evaluacion.objects.filter(userRol_id=userRol)
             print(type(eva))
             if len(eva)>0:
@@ -231,6 +235,15 @@ def gestionar_Eva_view(request):
         rolUser=UserRol.objects.all()
         lb = Labor.objects.all()
         return render(request, 'gestionarautoevaluacion.html',{"periodos":perido,"labors":lb,"userroles":rolUser,"evaluaciones":eva})
+    return redirect('coordinador_menu')
+
+@login_required
+def rol_view(request):
+    if request.method == 'GET':
+        usuario=UserDoc.objects.all()
+        rol=Rol.objects.all()
+        userRol=UserRol.objects.all()
+        return render(request, 'asignarRoles.html',{'usuarios':usuario,'roles':rol,'rolusers':userRol})
     return redirect('coordinador_menu')
 
 @login_required
@@ -416,3 +429,90 @@ def gestionar_periodo(request):
         except :    
             return redirect('periodo') 
     return redirect('periodo')
+
+@login_required
+def gestionar_eva_doc(request):
+    if request.method == 'POST':
+        try:
+            if 'Guardar' in request.POST:
+                cambios = []
+                for key in request.POST:
+                    if key.startswith('cambios['):
+                        indice = key.split('[', 1)[1].split(']')[0]
+                        #if indice 
+                        cambio = {
+                            'id': request.POST[f'cambios[{indice}][id]'],
+                            'estado': request.POST[f'cambios[{indice}][estado]'],
+                            'resultado': request.POST[f'cambios[{indice}][resultado]'],
+                            'puntaje': request.POST[f'cambios[{indice}][puntaje]']
+                        }
+                        cambios.append(cambio)
+                
+                print(cambios)
+                for cambio in cambios:
+                    evaluacion_id = cambio['id']
+                    resultado = cambio['resultado']
+                    puntaje = cambio['puntaje']
+                    if cambio['estado'] == 'En ejecución':
+                        
+                        evaluacion = Evaluacion.objects.get(id=evaluacion_id)
+                        evaluacion.eva_resultado = resultado
+                     
+                        evaluacion.eva_puntaje = puntaje
+                        evaluacion.save()            
+                return redirect('evaluacion')   
+        except :    
+            return redirect('evaluacion') 
+    return redirect('evaluacion')
+
+@login_required
+def gestionar_user_rol(request):
+    if request.method == 'POST':
+        try:
+                        
+            if 'Guardar' in request.POST:
+                userID = request.POST['usuario']
+                userObj = User.objects.get(id=userID)
+                rolID = request.POST['rol']
+                rolObj = Rol.objects.get(id=rolID)
+                uRol = UserRol.objects.create(
+                    user = userObj,
+                    rol = rolObj
+                )
+                uRol.save()
+                
+                return redirect('rol_view')  
+            elif 'Eliminar' in request.POST:
+                userRolID = request.POST['RolUsusario']
+                try:
+                    userRolSelect = UserRol.objects.get(id=userRolID)
+                    userRolSelect.delete()
+                except userRolSelect.DoesNotExist:
+                    pass
+                return redirect('rol_view')
+            elif 'Editar' in request.POST:
+                try:
+                    userRolID = request.POST['RolUsusario']
+                    userRolSelect = UserRol.objects.get(id=userRolID)
+                    userID = request.POST['usuario']
+                    userObj = User.objects.get(id=userID)
+                    rolID = request.POST['rol']
+                    rolObj = Rol.objects.get(id=rolID)
+
+                    userRolSelect.user=userObj
+                    userRolSelect.rol=rolObj
+                    userRolSelect.save()
+                    
+                    return redirect('rol_view')
+                except Labor.DoesNotExist:
+                    pass
+            elif 'Buscar' in request.POST:
+                userRolID = request.POST['RolUsusario']
+                userRolSelect = UserRol.objects.get(id=userRolID)
+                usuario=UserDoc.objects.all()
+                rol=Rol.objects.all()
+                userRol=UserRol.objects.all()
+                return render(request, 'asignarRoles.html',{'usuarios':usuario,'roles':rol,'rolusers':userRol,'urS':userRolSelect})   
+        except :    
+            return redirect('rol_view') 
+    return redirect('rol_view')
